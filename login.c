@@ -44,9 +44,10 @@ main(int argc, char *argv[]){
         if (strcmp(tokens[0],lname) == 0 && strcmp(tokens[1],lpassword) == 0){
           printf("matched\n\r");
           getc();
+          close(pwdfd);
           //loggedIn == 1;
-          uid = atoi(tokens[2]);
-          gid = atoi(tokens[3]);
+          gid = atoi(tokens[2]);
+          uid = atoi(tokens[3]);
           // uid = (int)tokens[2][0] - 48;
           // gid = (int)tokens[3][0] - 48;
           printf("uid %d gid %d tokens[5] %s --\n\r",uid,gid,tokens[5]);
@@ -57,7 +58,7 @@ main(int argc, char *argv[]){
           chdir(tokens[5]);
           printf("case 3\n\r");
           getc();
-          close(pwdfd);
+
           printf("case 4\n\r");
           getc();
           //printf("userprogram:%s",tokens[6]);
@@ -76,7 +77,7 @@ main(int argc, char *argv[]){
           close(pwd);
           loggedIn = 0;
     }*/
-    printf("-- %d --",pwdfd);
+    //printf("-- %d --",pwdfd);
     close(pwdfd);
     pwdfd = open("/etc/passwd", O_RDONLY);
 
