@@ -13,15 +13,17 @@ main(int argc, char *argv[]){
   int linelen = 0, loggedIn = 0, result;
   int uid, gid;
   int duped = 0;
-  //printf("PRINTING IN LOGIN PROCESS\n\r");
-  //printf("in: %d\n\r",in);
-  //printf("out: %d\n\r",out);
+
   close(0);
   close(1);
-  close(2);
   in = open(argv[1], O_RDONLY); // file descriptor 0
   out = open(argv[1], O_WRONLY); // for display to console fd 1
+  printf("IN: %d\n\r",in);
+  printf("OUT: %d\n\r",out);
+  /*
   err = open(argv[1], O_RDONLY); // fd 2
+  printf("ERR: %d\n\r",err);
+  */
 
   fixtty(argv[1]); // set tty name string in PROC.tty
 
@@ -32,30 +34,34 @@ main(int argc, char *argv[]){
     printf("password:"); gets(lpassword);
     do{
       linelen = fileGetLine(pwdfd,temp,&endFile);
-      printf("temp - %s pwd %d linelen %d",temp,pwdfd,linelen);
-      getc();
-
+      //printf("temp - %s pwd %d linelen %d",temp,pwdfd,linelen);
+      //getc();
       if (linelen != -1 && linelen != 0){
         parseLine(temp,tokens,':');
-        printf("parsing");
-        printf("%s %s",tokens[0],tokens[1]);
-        getc();
+        //printf("parsing");
+        //printf("%s %s",tokens[0],tokens[1]);
+        //getc();
         if (strcmp(tokens[0],lname) == 0 && strcmp(tokens[1],lpassword) == 0){
-          printf("matched");
+          printf("matched\n\r");
           getc();
-          loggedIn == 1;
+          //loggedIn == 1;
           uid = atoi(tokens[2]);
           gid = atoi(tokens[3]);
-
-          //  uid = (int)tokens[2][0] - 48;
-          //  gid = (int)tokens[3][0] - 48;
-          printf("uid %d gid %d tokens[5] %s --",uid,gid,tokens[5]);
-          chuid(uid,gid);
-          //chdir(tokens[5]);
-          //close(pwdfd);
-
-          printf("userprogram:%s",tokens[6]);
+          // uid = (int)tokens[2][0] - 48;
+          // gid = (int)tokens[3][0] - 48;
+          printf("uid %d gid %d tokens[5] %s --\n\r",uid,gid,tokens[5]);
           getc();
+          chuid(uid,gid);
+          printf("No----\n\r");
+          getc();
+          chdir(tokens[5]);
+          printf("case 3\n\r");
+          getc();
+          close(pwdfd);
+          printf("case 4\n\r");
+          getc();
+          //printf("userprogram:%s",tokens[6]);
+          //getc();
           exec("sh");
         //  exec(tokens[6]); // exec to program in user account
         }

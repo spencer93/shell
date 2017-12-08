@@ -7,10 +7,10 @@
 **********************************************************/
 #include "ucode.c"
 
-int in, out, err;
+
 void menu(){
     printf("\n\r***************** SHELL MENU *******************\n\r");
-    printf("   | ps | cd | ls | l2u | more | cat | pipe |\n\r");
+    printf("   | cd | ls | l2u | more | cat | pipe |\n\r");
     printf("************************************************\n\r");
 }
 
@@ -149,8 +149,7 @@ int IORedirection(char **cmdtokens, int start, int stop){
 
     }
     if(strcmp(cmdtokens[i],">>") == 0){
-
-      out_fd = open(cmdtokens[i+1], O_APPEND);
+      out_fd = open(cmdtokens[i+1], O_WRONLY | O_APPEND);
       dup2(out_fd,1);
       close(out_fd);
     }
@@ -244,6 +243,7 @@ void doPipe(char ** cmdtokens,int tokenStart,int tokenStop, int *pd){
 
 int main(int argc, char*argv[]){
   int numTokens;
+  int in = -1,out = -2, err = -3;
   int i = 0, index = 0;
   int cci = 0; // current command index
   int console;
@@ -256,17 +256,28 @@ int main(int argc, char*argv[]){
   char *tokens[40];
   char tty[256];
 
-  printf("argv[0] %s",argv[0]);
-  printf("argc:%d",argc);
+  close(0);
+  close(1);
+  gettty(tty);
+  in = open(tty, O_RDONLY); // file descriptor 0
+  out = open(tty, O_WRONLY); // for display to console
+  err = open(tty, O_RDONLY);
+
+  if (out == -1){
+    return -1;
+  }
+  printf("tty: %s\n\r",tty);
+  printf("argv[0] %s\n\r",argv[0]);
+  printf("argc:%d\n\r",argc);
   printf("SHELL pid: %d\n\r",getpid());
-  getc();
+
   while(1){
     close(0);
     close(1);
     close(2);
     in = open("/dev/tty0", O_RDONLY); // file descriptor 0
-    out = open("/dev/tty0",O_WRONLY); // for display to console
-    err = open("/dev/tty0", O_RDONLY); // file descriptor 0
+    out = open("/dev/tty0",O_WRONLY); // for display to console 1
+    err = open("/dev/tty0", O_RDONLY); // file descriptor 2
     menu();
     gettty(tty);
     printf("---tty: %s -----\n\r",tty);
