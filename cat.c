@@ -17,13 +17,19 @@ int main(int argc, char *argv[]){
   char line[lineLength];
   char buf[1];
   char carriageReturn = '\r';
+  char newline = '\n';
   char z = 'Z';
 
   // at this point fd will be either 0 (stdin) or N (file) where N > 0
   if(!inputRedirected()){ // reading from stdin in
     while(1){
       gets(line);
-      printf("%s",line);
+      if(!outputRedirected()){
+        printf("%s\n\r",line);
+      }
+      else{
+        printf("%s",line);
+      }
     }
   }
   else{ // reading from file or pipe
@@ -35,7 +41,8 @@ int main(int argc, char *argv[]){
           write(1,&line[i++],1);
         }
         if (!outputRedirected()){ // WRITING TO STDOUT, so this is needed for a newline
-          write(1,&carriageReturn,1);
+          if (line[i-1] == '\n')
+            write(1,&carriageReturn,1);
         }
         characterCount = 0;
         i = 0;

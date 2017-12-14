@@ -281,17 +281,16 @@ int main(int argc, char*argv[]){
     // now we've got the real list of commands no empty strings
     realLen = index;
     printf("realLen %d\n\r",realLen);
-    printf("recomp\n\r");
-    for (i = 0; i < realLen; i++){
+    /*for (i = 0; i < realLen; i++){
       printf("%s \n\r",valids[i]);
-    }
+    }*/
     if(realLen <= 0) // user input no commands
       continue;
     if (realLen >= 2 && strcmp("cd",tokens[0]) == 0){ // handles simple change dir
       chdir(tokens[1]);
       continue;
     }
-    if (strcmp("exit",tokens[0]) == 0){ // handles exit shell
+    if (strcmp("logout",tokens[0]) == 0){ // handles exit shell
       printf("\n\rexiting....\n\r");
       exit(0);
     }
